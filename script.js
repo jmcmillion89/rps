@@ -1,28 +1,52 @@
 const buttons = document.querySelectorAll('input')
 
+let playerScore = 0;
+let computerScore = 0;
+
 buttons.forEach(button => {
     button.addEventListener('click', function(){
-        playRound(button.value)
+        document.querySelector('.results').innerHTML = playRound(button.value)
+        document.querySelector('.score').innerHTML = `<h3>Your Score: ${playerScore}. Computer Score: ${computerScore}.</h3>`
     })
 })
 
+function disableButtons() {
+    buttons.forEach(button => {
+        button.disabled = true
+    })
+}
 function getComputerChoice() {
     const hand = ['Rock', 'Paper', 'Scissors']
     return hand[(Math.floor(Math.random() * hand.length))];
 }
 
-
-
 function playRound(playerSelection) {
     let computerSelection = getComputerChoice();
-    if (playerSelection === 'Rock' && computerSelection === 'Scissors') {
-        return 'You Win! Rock beats Scissors.';
-    } else if (playerSelection === 'Scissors' && computerSelection === 'Paper') {
-        return 'You Win! Scissors beats Paper.'
-    } else if (playerSelection === 'Paper' && computerSelection === 'Rock') {
-        return 'You Win! Paper beats Rock.'
+    let result = '';
+    
+    
+    if ((playerSelection === 'Rock' && computerSelection === 'Scissors') ||
+        (playerSelection === 'Scissors' && computerSelection === 'Paper') ||
+        (playerSelection === 'Paper' && computerSelection === 'Rock')) {
+        playerScore++;     
+        result = (playerSelection + ' beats ' + computerSelection + '.');
     } else if (playerSelection === computerSelection) {
-        return `It's a tie!`
+        result += `It's a tie!`
     } else {
-        return `You Lose! ${computerSelection} beats ${playerSelection}.`
-    }}
+        computerScore++;
+        result = `${computerSelection} beats ${playerSelection}.`
+    }
+
+    if (playerScore === 5) {
+        result = '<br> <h1>You win the game!</h1>'
+        disableButtons()
+    }
+    
+    if (computerScore === 5) {
+        result = '<br> <h1>The computer wins the game!</h1>'
+        disableButtons()
+    }
+
+    return result
+
+}
